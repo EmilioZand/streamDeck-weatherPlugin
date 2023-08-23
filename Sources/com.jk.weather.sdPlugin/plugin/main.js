@@ -126,12 +126,12 @@ function getWeather (jsonObj, context) {
   }
 }
 
-function prepareUrl(laditude, longitude, unit) {
+function prepareUrl(cityName, laditude, longitude, unit) {
   let url;
   const u = unit === "celsius" ? "metric" : "imperial";
   switch (provider) {
     case "weatherApi":
-      url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${cityName}&aqi=no`;
+      url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${laditude},${longitude}&aqi=no`;
       break;
     case "openWeatherMap":
       url = `https://api.openweathermap.org/data/2.5/weather?lat=${laditude}&lon=${longitude}&appid=${apiKey}&units=${u}`;
@@ -207,7 +207,7 @@ function setImageAndCity(response, context, city, displayCity) {
 
 function sendRequest(context, cityName, laditude, longitude, displayCity, unit, roundDegree) {
   const request = new XMLHttpRequest();
-  const url = prepareUrl(laditude, longitude, unit);
+  const url = prepareUrl(cityName, laditude, longitude, unit);
   request.open("GET", url);
   request.send();
   request.onreadystatechange = function () {
