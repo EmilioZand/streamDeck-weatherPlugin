@@ -41,6 +41,8 @@ function connectElgatoStreamDeckSocket(
     if (jsonObj.event === "didReceiveSettings") {
       const payload = jsonObj.payload.settings;
       initiateElement("cityName", payload.cityName);
+      initiateElement("laditude", payload.laditude);
+      initiateElement("longitude", payload.longitude);
       initiateElement("frequency", payload.frequency, 0);
       initiateElement("displayCity", payload.displayCity, 0);
       initiateElement("unit", payload.unit, "celsius");
@@ -68,6 +70,8 @@ function updateSettings() {
   if (websocket && websocket.readyState === 1) {
     let payload = {};
     payload.cityName = document.getElementById("cityName").value;
+    payload.laditude = document.getElementById("laditude").value;
+    payload.longitude = document.getElementById("longitude").value;
     payload.frequency = document.getElementById("frequency").value;
     payload.unit = document.getElementById("unit").value;
     payload.roundDegree = document.getElementById("roundDegree").value;

@@ -21,6 +21,8 @@ The button is configured as follows:
 - Provider: the weather information provider: WeatherAPI or OpenWeather
 - API key: your provider account key available in your account information on the associated provider website
 - City Name: the city for which the information will be displayed on the button
+- Laditude: the laditude of the location for weather lookup
+- Longitude: the longitude of the location for weather lookup
 - Temperature: the temperature unit ( Celsius or Fahrenheit)
 - Fetch frequency: how often the data is updated (beware for free accounts the limits set by the provider)
 - Display city name: Provides the possibility choose where to display the city name (also if we need to hide it)

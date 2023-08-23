@@ -80,6 +80,8 @@ function getGlobalSettings () {
 
 function getWeather (jsonObj, context) {
   let cityName = "";
+  let laditude = "";
+  let longitude = "";
   let unit = "";
   let displayCity = 0;
   let roundDegree = true;
@@ -88,12 +90,16 @@ function getWeather (jsonObj, context) {
   if (
     jsonObj.payload.settings != null &&
     jsonObj.payload.settings.hasOwnProperty("cityName") &&
+    jsonObj.payload.settings.hasOwnProperty("laditude") &&
+    jsonObj.payload.settings.hasOwnProperty("longitude") &&
     jsonObj.payload.settings.hasOwnProperty("unit") &&
     jsonObj.payload.settings.hasOwnProperty("frequency") &&
     jsonObj.payload.settings.hasOwnProperty("roundDegree")
 
   ) {
     cityName = jsonObj.payload.settings["cityName"].toLowerCase();
+    laditude = jsonObj.payload.settings["laditude"].toLowerCase();
+    longitude = jsonObj.payload.settings["longitude"].toLowerCase();
     unit = jsonObj.payload.settings["unit"];
     displayCity = jsonObj.payload.settings["displayCity"];
     roundDegree = jsonObj.payload.settings["roundDegree"] === "true";
@@ -103,24 +109,24 @@ function getWeather (jsonObj, context) {
         : false;
   }
 
-  if (cityName === "" || apiKey === "") {
+  if (cityName === "" || laditude === "" || longitude === "" || apiKey === "") {
     const json = {
       event: "showAlert",
       context: jsonObj.context,
     };
     websocket.send(JSON.stringify(json));
   } else {
-    sendRequest(context, cityName, displayCity, unit, roundDegree);
+    sendRequest(context, cityName, laditude, longitude, displayCity, unit, roundDegree);
     if (frequency) {
       setInterval(
-        () => sendRequest(context, cityName, displayCity, unit, roundDegree),
+        () => sendRequest(context, cityName, displayCity, laditude, longitude, unit, roundDegree),
         frequency
       );
     }
   }
 }
 
-function prepareUrl(cityName, unit) {
+function prepareUrl(laditude, longitude, unit) {
   let url;
   const u = unit === "celsius" ? "metric" : "imperial";
   switch (provider) {
@@ -128,7 +134,7 @@ function prepareUrl(cityName, unit) {
       url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${cityName}&aqi=no`;
       break;
     case "openWeatherMap":
-      url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=${u}`;
+      url = `https://api.openweathermap.org/data/2.5/weather?lat=${laditude}&lon=${longitude}&appid=${apiKey}&units=${u}`;
       break;
   }
   return url;
@@ -199,9 +205,9 @@ function setImageAndCity(response, context, city, displayCity) {
   return url;
 }
 
-function sendRequest(context, cityName, displayCity, unit, roundDegree) {
+function sendRequest(context, cityName, laditude, longitude, displayCity, unit, roundDegree) {
   const request = new XMLHttpRequest();
-  const url = prepareUrl(cityName, unit);
+  const url = prepareUrl(laditude, longitude, unit);
   request.open("GET", url);
   request.send();
   request.onreadystatechange = function () {
